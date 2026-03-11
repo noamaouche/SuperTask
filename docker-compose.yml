@@ -19,3 +19,18 @@ services:
     depends_on:
       api:
         condition: service_healthy
+
+  api:
+    build: .
+    environment:
+      - PORT=3000
+    read_only: true          # Filesystem en lecture seule
+    tmpfs:
+      - /tmp                 # /tmp reste accessible en RAM
+    cap_drop:
+      - ALL                  # Suppression de toutes les capabilities Linux
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
