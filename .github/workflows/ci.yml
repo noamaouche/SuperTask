@@ -1,11 +1,3 @@
-name: SuperTask CI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -14,7 +6,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'        # ← 22 au lieu de 20
           cache: 'npm'
       - run: npm ci
       - run: npm test
@@ -29,7 +21,7 @@ jobs:
         run: docker build -t supertask:${{ github.sha }} .
 
       - name: Run Trivy Vulnerability Scanner
-        uses: aquasecurity/trivy-action@v0.33.1
+        uses: aquasecurity/trivy-action@0.30.0   # ← version corrigée
         with:
           image-ref: 'supertask:${{ github.sha }}'
           format: 'table'
